@@ -1,0 +1,77 @@
+<!doctype html> 
+<html> 
+  <head> 
+    <title> Work in progress </title>
+
+    <!-- Load Chart.js --> 
+    <script src="./Chart/Chart.js"></script> 
+
+    <!-- Get jQuery --> 
+   <!-- <script type="text/javascript" src="./js/jquery-2.1.1.min.js"></script>-->
+   <script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
+    </script>
+
+    <!-- Try getting something from a public fusiontable --> 
+    <!-- table-id: 1JqH20ZtvZ3PU9hVk38MaLRHy7IC1MJfWHIL-pzcU --> 
+    <!-- table-id: 1bIRGnGE4d3zrFMFDTs4IW_qP-EeRNlr0klyHuDdD --> 
+
+    <meta name = "viewport" content = "initial-scale = 1, user-scalable  = no"> 
+    <style> 
+      canvas{
+      }
+    </style>
+  </head> 
+  <body> 
+
+    <canvas id="canvas" height="450" width="450"></canvas> 
+    
+    <script> 
+
+      var query = "SELECT Number, Text FROM " + '1bIRGnGE4d3zrFMFDTs4IW_qP-EeRNlr0klyHuDdD';
+      var encodedQuery = encodeURIComponent( query );
+      
+      <!-- The table is public, Still "API-key" is needed to access-->
+      var url = ['https://www.googleapis.com/fusiontables/v1/query'];
+      url.push('?sql=' + encodedQuery);
+      url.push('&key=AIzaSyDfFx0zMf1Wl-RoEdb8D-lYzXO4rsXzmic');
+      url.push('&callback=?');
+
+      
+      $.ajax({
+      url: url.join(''), 
+      dataType: 'jsonp',
+      success: function ( data ) { 
+          var rows = data['rows']; 
+
+          var names=[];
+          var values=[]; 
+          
+          for (var i in rows) { 
+            names.push ( rows[i][1] ); 
+            values.push ( rows[i][0] ); 
+          }
+          myfun (names, values ); 
+        }
+      });
+
+      function myfun(noms, vals ) {
+ 
+        var data = { 
+          labels : noms,
+	  datasets : [
+	  	{
+			fillColor : "rgba(205,0,0,0.5)",
+			strokeColor : "rgba(205,0,0,1)",
+			data : vals
+		}
+        ]
+        }
+      
+        new Chart(document.getElementById("canvas").getContext("2d")).Bar(data);
+      }
+
+    
+    </script> 
+    </body> 
+</html>
